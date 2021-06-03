@@ -1,2 +1,2 @@
-# netflix-addictector-api
- API server that hosts quotes for Netflix Addictector browser extension
+# netflix-addictector-server
+ Server that host quotes for Netflix Addictector browser extension

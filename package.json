@@ -1,0 +1,25 @@
+{
+  "name": "netflix-addictector-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "author": "https://felixisaac.dev",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.9",
+    "fastify": "^3.17.0",
+    "fastify-cors": "^6.0.1",
+    "fastify-helmet": "^5.3.1"
+  },
+  "engines": {
+    "node": "16.2.x",
+    "npm": "7.15.x"
+  }
+}
