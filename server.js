@@ -41,7 +41,7 @@ fastify.get('/quotes/:category', async function (response, reply) {
 	};
 })
 
-fastify.listen(process.env.PORT || 3000, function (err, address) {
+fastify.listen(process.env.PORT || 5000, function (err, address) {
 	if (err) fastify.log.error(err);
 	fastify.log.info(`Server listening on ${address}`)
 })
