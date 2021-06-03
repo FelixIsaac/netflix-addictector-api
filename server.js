@@ -5,8 +5,8 @@ import { getQuotes, getQuotesFromCategory } from './src/utils/server-utils.js';
 
 const fastify = Fastify({ logger: true });
 
-fastify.register(helmet);
-fastify.register(cors);
+// fastify.register(helmet);
+// fastify.register(cors);
 
 fastify.get('/', async function (response, reply) {
 	const quotes = await getQuotes();
