@@ -5,8 +5,8 @@ import { getQuotes, getQuotesFromCategory } from './src/utils/server-utils.js';
 
 const fastify = Fastify({ logger: true });
 
-// fastify.register(helmet);
-// fastify.register(cors);
+fastify.register(helmet);
+fastify.register(cors);
 
 fastify.get('/', async function (response, reply) {
 	const quotes = await getQuotes();
@@ -41,7 +41,7 @@ fastify.get('/quotes/:category', async function (response, reply) {
 	};
 })
 
-fastify.listen(process.env.PORT || 5000, function (err, address) {
+fastify.listen(process.env.PORT || 3000, '0.0.0.0', function (err, address) {
 	if (err) fastify.log.error(err);
 	fastify.log.info(`Server listening on ${address}`)
 })
