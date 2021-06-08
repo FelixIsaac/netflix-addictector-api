@@ -4,9 +4,11 @@
   "private": true,
   "description": "",
   "author": "https://felixisaac.dev",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --ext .js --watch src --exec npm run start",
+    "dev:heroku": "nodemon --ext .js --watch src --exec heroku local",
     "start": "node ."
   },
   "license": "MIT",
@@ -21,5 +23,8 @@
   "engines": {
     "node": "16.2.x",
     "npm": "7.15.x"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }

@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
 import helmet from 'fastify-helmet';
 import cors from 'fastify-cors';
-import { getQuotes, getQuotesFromCategory, getQuotesFromCategories } from './src/utils/server-utils.js';
+import { getQuotes, getQuotesFromCategory, getQuotesFromCategories } from './utils/server-utils.js';
 
 const fastify = Fastify({ logger: false });
 
@@ -57,15 +57,26 @@ const fromCategoriesOptions = {
 		body: {
 			type: 'object',
 			properties: {
-				[{ type: 'string' }]: { type: 'string' }
+				categories: {
+					type: 'object',
+					properties: {
+						[{ type: 'string' }]: {
+							type: 'object',
+							properties: {
+								limit: { type: 'number' },
+								after: { type: 'number'}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
 }
 
 fastify.post('/quotes/fromcategories', fromCategoriesOptions, async function (response, reply) {
-	const { categories } = response.body; // categories is obj { categoryName: {limit:num,after:num} } 
-	const { limit } = response.query; // limit is total limit of quotes
+	const { categories } = response.body;
+	const { limit } = response.query;
 	const categoryQuotes = await getQuotesFromCategories(categories, limit);
 
 	return {
