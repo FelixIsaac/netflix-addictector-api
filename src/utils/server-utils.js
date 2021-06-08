@@ -21,3 +21,17 @@ export async function getQuotesFromCategory(category, limit = 30, after = 0) {
 	const quotes = JSON.parse((await fs.readFile(path, 'utf8')) || '[]');
 	return quotes.slice(after, limit + after).slice(0, limit);
 }
+
+// limit 0 for no limit
+export async function getQuotesFromCategories(categories = {}, limit = 0) {
+	const categoryNames = Object.keys(categories);
+
+	const quotes = categoryNames.map((category) => {
+		const { limit, after } = categories[category];
+		return getQuotesFromCategory(category, limit, after);
+	});
+
+
+	const result = await Promise.all(quotes);
+	return result.flat();
+}
