@@ -2,6 +2,9 @@ import Fastify from 'fastify';
 import helmet from 'fastify-helmet';
 import cors from 'fastify-cors';
 import { getQuotes, getQuotesFromCategory, getQuotesFromCategories } from './utils/server-utils.js';
+// import { getQuotesFromCategoriesSchema } from './schemas';
+
+import { getAllQuotesFromSite } from './datasource/brainyQuoteScraper.js';
 
 const fastify = Fastify({ logger: false });
 
@@ -51,30 +54,7 @@ fastify.get('/quotes/:category', async function (response, reply) {
 	};
 })
 
-
-const fromCategoriesOptions = {
-	schema: {
-		body: {
-			type: 'object',
-			properties: {
-				categories: {
-					type: 'object',
-					properties: {
-						[{ type: 'string' }]: {
-							type: 'object',
-							properties: {
-								limit: { type: 'number' },
-								after: { type: 'number'}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-fastify.post('/quotes/fromcategories', fromCategoriesOptions, async function (response, reply) {
+fastify.post('/quotes/fromcategories', async function (response, reply) {
 	const { categories } = response.body;
 	const { limit } = response.query;
 	const categoryQuotes = await getQuotesFromCategories(categories, limit);
@@ -85,6 +65,16 @@ fastify.post('/quotes/fromcategories', fromCategoriesOptions, async function (re
 		categoryQuotes
 	}
 })
+
+fastify.get('/quotes/regenerate', async function(response, reply) {
+	const success = await getAllQuotesFromSite();
+
+	return {
+		message: `Scraping ${success ? '' : 'un'}successful`,
+		statusCode: success ? 200 : 401,
+		success
+	}
+});
 
 fastify.listen(process.env.PORT || 3000, '0.0.0.0', function (err, address) {
 	if (err) fastify.log.error(err);

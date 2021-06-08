@@ -1,7 +1,7 @@
 import { promises as fs, existsSync } from 'fs';
 import { resolve as resolvePath } from 'path';
 
-export async function getQuotes(datasourcePath = './src/quotes') {
+export async function getQuotes(datasourcePath = './quotes') {
 	return fs.readdir(resolvePath(datasourcePath));
 }
 
@@ -14,7 +14,7 @@ export async function getQuotesFromCategory(category, limit = 30, after = 0) {
 	// asign random category if not category provided
 	after = Math.max(after - 1, 0);
 	category ||= await randomCategory();
-	const path = resolvePath(`./src//quotes/${category}`);
+	const path = resolvePath(`./quotes/${category}`);
 
 	if (!existsSync(path)) throw new Error('Quotes unavailable or not found');
 
@@ -30,7 +30,6 @@ export async function getQuotesFromCategories(categories = {}, limit = 0) {
 		const { limit, after } = categories[category];
 		return getQuotesFromCategory(category, limit, after);
 	});
-
 
 	const result = await Promise.all(quotes);
 	return result.flat();

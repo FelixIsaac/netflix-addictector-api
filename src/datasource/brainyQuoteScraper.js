@@ -62,7 +62,7 @@ export async function getQuotesFromTopic(topic) {
  * @param  {string} quotesFileName JSON file path
  * @return {boolean} True or false represents succes or failed respectively
  */
-export async function saveQuotes(quotes, quotesFileName = './src/quotes/quotes.json') {
+export async function saveQuotes(quotes, quotesFileName = './quotes/quotes.json') {
 	try {
 		const path = resolvePath(quotesFileName);
 
@@ -105,7 +105,7 @@ export async function getAllQuotesFromSite() {
 						const quotes = await getQuotesFromTopic(topic);
 
 						console.info(`Got ${quotes.length} quotes from topic ${topic}`)
-						saveQuotes(quotes, `./src/quotes/${topic}.json`);
+						saveQuotes(quotes, `./quotes/${topic}.json`);
 					} catch (err) {
 						console.error('An error occured', err.message);
 						if (err?.response?.status !== 429) return;
