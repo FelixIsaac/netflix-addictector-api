@@ -2,14 +2,19 @@ import Fastify from 'fastify';
 import helmet from 'fastify-helmet';
 import cors from 'fastify-cors';
 import { getQuotes, getQuotesFromCategory, getQuotesFromCategories } from './utils/server-utils.js';
-// import { getQuotesFromCategoriesSchema } from './schemas';
+import {
+	getQuotesOptions, quoteSchema, getRootOptions, getQuotesFromCategoriesOptions
+} from './schemas/fastify/index.js';
 
-import { getAllQuotesFromSite } from './datasource/brainyQuoteScraper.js';
-
-const fastify = Fastify({ logger: false });
+const fastify = Fastify({ logger: true });
 
 fastify.register(helmet);
 fastify.register(cors);
+
+fastify.addSchema({
+	$id: 'quote',
+	...quoteSchema
+})
 
 fastify.addContentTypeParser('application/json', { parseAs: 'string' }, function (request, body, done) {
 	try {
@@ -21,7 +26,7 @@ fastify.addContentTypeParser('application/json', { parseAs: 'string' }, function
 	}
 })
 
-fastify.get('/', async function (response, reply) {
+fastify.get('/', getRootOptions, async function (response, reply) {
 	const quotes = await getQuotes();
 	
 	return {
@@ -31,7 +36,7 @@ fastify.get('/', async function (response, reply) {
 	};
 })
 
-fastify.get('/quotes', async function (response, reply) {
+fastify.get('/quotes', getQuotesOptions, async function (response, reply) {
 	const { limit, after } = response.query;
 	const quotes = await getQuotesFromCategory(undefined, limit, after);
 
@@ -42,7 +47,7 @@ fastify.get('/quotes', async function (response, reply) {
 	};
 })
 
-fastify.get('/quotes/:category', async function (response, reply) {
+fastify.get('/quotes/:category', getQuotesOptions, async function (response, reply) {
 	const { category } = response.params;
 	const { limit, after } = response.query;
 	const quotes = await getQuotesFromCategory(category, limit, after);
@@ -54,7 +59,7 @@ fastify.get('/quotes/:category', async function (response, reply) {
 	};
 })
 
-fastify.post('/quotes/fromcategories', async function (response, reply) {
+fastify.post('/quotes/fromcategories', getQuotesFromCategoriesOptions, async function (response, reply) {
 	const { categories } = response.body;
 	const { limit } = response.query;
 	const categoryQuotes = await getQuotesFromCategories(categories, limit);
@@ -65,16 +70,6 @@ fastify.post('/quotes/fromcategories', async function (response, reply) {
 		categoryQuotes
 	}
 })
-
-fastify.get('/quotes/regenerate', async function(response, reply) {
-	const success = await getAllQuotesFromSite();
-
-	return {
-		message: `Scraping ${success ? '' : 'un'}successful`,
-		statusCode: success ? 200 : 401,
-		success
-	}
-});
 
 fastify.listen(process.env.PORT || 3000, '0.0.0.0', function (err, address) {
 	if (err) fastify.log.error(err);

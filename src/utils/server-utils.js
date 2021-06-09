@@ -23,11 +23,9 @@ export async function getQuotesFromCategory(category, limit = 30, after = 0) {
 }
 
 // limit 0 for no limit
-export async function getQuotesFromCategories(categories = {}, limit = 0) {
-	const categoryNames = Object.keys(categories);
-
-	const quotes = categoryNames.map((category) => {
-		const { limit, after } = categories[category];
+export async function getQuotesFromCategories(categories = [], limit = 0) {
+	const quotes = categories.map((categoryData) => {
+		const { limit, after, category } = categoryData;
 		return getQuotesFromCategory(category, limit, after);
 	});
 
