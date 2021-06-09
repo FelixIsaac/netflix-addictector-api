@@ -19,16 +19,32 @@ export async function getQuotesFromCategory(category, limit = 30, after = 0) {
 	if (!existsSync(path)) throw new Error('Quotes unavailable or not found');
 
 	const quotes = JSON.parse((await fs.readFile(path, 'utf8')) || '[]');
-	return quotes.slice(after, limit + after).slice(0, limit);
+	return quotes.slice(after, limit + after).splice(0, limit);
 }
 
 // limit 0 for no limit
 export async function getQuotesFromCategories(categories = [], limit = 0) {
-	const quotes = categories.map((categoryData) => {
+	const errors = []
+
+	const quotes = categories.map(async (categoryData) => {
 		const { limit, after, category } = categoryData;
-		return getQuotesFromCategory(category, limit, after);
+		const quotes = await getQuotesFromCategory(category, limit, after);
+
+		// no more quotes in the "?after" index, send error
+		if (!quotes.length) errors.push({
+			category,
+			errorCode: 3,
+			message: 'No quotes found, consider decreaing "after" query value'
+		})
+
+		return quotes;
 	});
 
 	const result = await Promise.all(quotes);
-	return result.flat();
+	result.splice(0, limit);
+
+	return {
+		quotes: result.flat(),
+		errors
+	};
 }

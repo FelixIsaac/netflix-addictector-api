@@ -62,12 +62,13 @@ fastify.get('/quotes/:category', getQuotesOptions, async function (response, rep
 fastify.post('/quotes/fromcategories', getQuotesFromCategoriesOptions, async function (response, reply) {
 	const { categories } = response.body;
 	const { limit } = response.query;
-	const categoryQuotes = await getQuotesFromCategories(categories, limit);
+	const { quotes, errors } = await getQuotesFromCategories(categories, limit);
 
 	return {
 		message: 'Categories\' quotes',
 		statusCode: 200,
-		categoryQuotes
+		quotes,
+		errors
 	}
 })
 
