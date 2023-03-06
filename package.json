@@ -14,7 +14,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "cheerio": "^1.0.0-rc.9",
     "fastify": "^3.17.0",
     "fastify-cors": "^6.0.1",
